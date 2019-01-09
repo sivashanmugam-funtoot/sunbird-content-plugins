@@ -21,14 +21,14 @@ Keyboard.htmlLayout = '<div id = "keyboardDiv">\
           <% if(Keyboard.buttons.firstRow.length >0) { %> \
             <div id="firstRowAlpha">\
               <% _.each(Keyboard.buttons.firstRow, function(but) { %> \
-                <div onclick="Keyboard.addLetter(event);" class="key_barakhadi" style="width:<%= Keyboard.keyWidth %>%">\
+                <div onclick="Keyboard.addLetter(event);" class="key_barakhadi" >\
                   <span><%= but %>\</span>\
                 </div>\
               <% }); %>\
             </div>\
             <div id="secondRowAlpha">\
               <% _.each(Keyboard.buttons.secondRow, function(but) { %> \
-                <div onclick="Keyboard.addLetter(event);" class="key_barakhadi" style="width:<%= Keyboard.keyWidth %>%">\
+                <div onclick="Keyboard.addLetter(event);" class="key_barakhadi" >\
                   <span><%= but %>\</span>\
                 </div>\
               <% }); %>\

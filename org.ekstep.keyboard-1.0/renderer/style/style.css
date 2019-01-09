@@ -76,6 +76,10 @@
   text-align: center;
   width: 5.5%;
 }
+.key_barakhadi{
+  flex-grow: 1;
+  min-width:7%;
+}
 
 .key_barakhadi,
 .key_barakhadi_numeric {
@@ -107,19 +111,25 @@
 }
 
 #firstRowAlpha {
-  width: 92%;
+  overflow: hidden;
+  width: 84%;
   top: 6%;
-  left: 9%;
+  left: 8%;
   height: 11%;
   position: relative;
+  display:flex;
+  flex-wrap:flex;
 }
 
 #secondRowAlpha {
-  width: 92%;
+  overflow: hidden;
+  width: 80%;
   top: 4%;
-  left: 7%;
+  left: 8%;
   height: 12%;
   position: relative;
+  display:flex;
+  flex-wrap:flex;
 }
 
 #thirdRowAlpha {
