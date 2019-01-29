@@ -38,6 +38,7 @@ org.ekstep.contentrenderer.questionUnitPlugin = Plugin.extend({
     EkstepRendererAPI.addEventListener('org.ekstep.questionunit' + ":loadimagefromurl", this.handleLoadImageFromUrl, this);
     EkstepRendererAPI.addEventListener('org.ekstep.questionunit' + ":loadAssetUrl", this.handleGetAssetUrl, this);
   },
+  
   /**
    * Listener for ':show' event.
    * @param {object} event - Event object
