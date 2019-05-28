@@ -51,20 +51,16 @@
                             <div class="ui segments inner-segment" ng-class="{cardBorder: focused, 'has-errorCard': submitted && seqForm['options_' + $index].$error.required}">
                                 <div class="ui segment">
                                     <div class="ui grid">
-                                        <div class="ten wide column">
-                                            <div class="form-group segment textBoxDiv">
-                                                <input type="text" class="form-control textbox" placeholder="Enter Sequence {{key + 1}}" ng-model="seqFormData.options[key].text"
-                                                    maxlength="120" ng-class="{'has-success':seqForm['options_' + $index].$valid, 'has-error': submitted && seqForm['options_' + $index].$error.required}"
-                                                    ng-init="focused = false" ng-focus="focused = true;generateTelemetry({type: 'TOUCH', id: 'input', target: {id: 'questionunit-sequence-option', ver: '', type: 'input'}})"
-                                                    ng-blur="focused = false" ng-required="!(seqFormData.options[$index].text.length)" name="options_{{$index}}"
-                                                />
+                                        <div class="twelve wide column">
+                                            <div class="form-group segment seqBoxDiv">
+                                                <div type="text" 
+                                                    class="form-control textbox-seq seqoption-text-ck" placeholder="Enter Sequence {{key + 1}}"  
+                                                    ng-model="seqFormData.options[key].text" id="seqoptions_{{$index}}" 
+                                                    ng-class="{'has-success':seqForm['options_' + $index].$valid, 'has-error': submitted && seqForm['options_' + $index].$error.required, 'seqoption-placeholder':seqFormData.options[$index].text.length==0}" 
+                                                    ng-required="!(seqFormData.options[$index].text.length)"  
+                                                    name="options_{{$index}}" contenteditable="true">
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="two wide column text-len">
-                                            <span class="maxLengthText">{{value.text.length}}
-                                                <span class="length-divider">/</span>
-                                                120
-                                            </span>
                                         </div>
                                     </div>
                                 </div>

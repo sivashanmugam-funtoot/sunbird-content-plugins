@@ -3,7 +3,7 @@
  * @class org.ekstep.questionunitsequence:seqQuestionFormController
  * Sivashanmugam Kannan<sivashanmugam.kannan@funtoot.com>
  */
-angular.module('seqApp', ['org.ekstep.question']).controller('seqQuestionFormController', ['$scope', '$rootScope', 'questionServices', function ($scope, $rootScope, questionServices) {
+angular.module('seqApp', ['org.ekstep.question']).controller('seqQuestionFormController', ['$scope', '$rootScope', '$timeout', 'questionServices', function ($scope, $rootScope, $timeout, questionServices) {
   var generalDataObj = {
     'text': '',
     'image': '',
@@ -23,12 +23,15 @@ angular.module('seqApp', ['org.ekstep.question']).controller('seqQuestionFormCon
   };
   $scope.seqFormData.media = [];
   $scope.editMedia = [];
+  
+  var questionUnitIns = org.ekstep.pluginframework.pluginManager.getPluginManifest("org.ekstep.questionunit");
+  $scope.ckConfig = { // eslint-disable-line no-undef
+    customConfig: ecEditor.resolvePluginResource(questionUnitIns.id, questionUnitIns.ver, "editor/ckeditor-config.js"),
+    skin: 'moono-lisa,' + CKEDITOR.basePath + "skins/moono-lisa/", // eslint-disable-line no-undef
+    contentsCss: CKEDITOR.basePath + "contents.css" // eslint-disable-line no-undef
+  };
 
-  var questionInput = CKEDITOR.replace('seqQuestion', {// eslint-disable-line no-undef
-    customConfig: ecEditor.resolvePluginResource('org.ekstep.questionunit', '1.0', "editor/ckeditor-config.js"),
-    skin: 'moono-lisa,' + CKEDITOR.basePath + "skins/moono-lisa/",// eslint-disable-line no-undef
-    contentsCss: CKEDITOR.basePath + "contents.css"// eslint-disable-line no-undef
-  });
+  var questionInput = CKEDITOR.replace('seqQuestion', $scope.ckConfig);
   questionInput.on('change', function () {
     $scope.seqFormData.question.text = this.getData();
   });
@@ -64,6 +67,7 @@ angular.module('seqApp', ['org.ekstep.question']).controller('seqQuestionFormCon
     EventBus.listeners['org.ekstep.questionunit.sequence:editquestion'] = [];
     ecEditor.addEventListener('org.ekstep.questionunit.sequence:editquestion', $scope.editSEQQuestion, $scope);
     ecEditor.dispatchEvent("org.ekstep.questionunit:ready");
+    $scope.BindCkeditor();
   }
   /**
    * for edit flow
@@ -233,6 +237,66 @@ angular.module('seqApp', ['org.ekstep.question']).controller('seqQuestionFormCon
       data.form = data.form || 'question-creation-sequence-form';
       questionServices.generateTelemetry(data);
     }
+  }
+  
+  /**
+   * destroy ckeditor apart from question
+   * on click delete option we need to destroy all ckeditor option
+   * we are not destroy question ckedit
+   */
+  $scope.destroyCkEditor = function () {
+    for (var name in CKEDITOR.instances) {
+      if (name != "seqQuestion") {
+        CKEDITOR.instances[name].destroy(true);
+      }
+    }
+  }
+
+  $scope.ckEditorEventHandler = function (index) {
+    $("#cke_seqoptions_" + index).remove();
+    var optionelement = $(".seqoption-text-ck")[index];
+    $scope.ckConfig.title = "Set Answer";
+    var optionInput = CKEDITOR.inline(optionelement.id, $scope.ckConfig);
+    //assign value to input box
+    CKEDITOR.instances[optionelement.id].setData($scope.seqFormData.options[index].text);
+    optionInput.on('change', function () {
+      //on changes get index id and assign to model
+      var id = parseInt(this.name.split("seqoptions_")[1]);
+      $scope.seqFormData.options[id].text = CKEDITOR.instances[this.name].getData();
+      $scope.$safeApply();
+    });
+    optionInput.on('blur', function () {
+      ecEditor.jQuery('.cke_float').hide();
+    });
+    optionInput.on('focus', function () {
+      $scope.generateTelemetry({
+        type: 'TOUCH',
+        id: 'input',
+        pageid: 'question-creation-sequence-form',
+        target: {
+          id: 'questionunit-sequence-option',
+          ver: '',
+          type: 'input'
+        }
+      })
+    });
+    $(".innerScroll").scroll(function () {
+      ecEditor.jQuery('.cke_float').hide();
+    });
+    optionInput.focus();
+  }
+
+  /**
+   * bind ckeditor in all option
+   */
+  $scope.BindCkeditor = function () {
+    $timeout(function () {
+      $scope.destroyCkEditor();
+      var index = 0;
+      for (index; index < $(".seqoption-text-ck").length; index++) {
+        $scope.ckEditorEventHandler(index);
+      }
+    }, 0);
   }
 }]);
 //# sourceURL=questionunit.sequence.editor.controller.js
